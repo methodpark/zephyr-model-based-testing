@@ -1,0 +1,20 @@
+{
+  "name": "Zephyr_MBT",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+    "--privileged"
+  ],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workdir/zephyr-model-based-testing,type=bind",
+  "workspaceFolder": "/workdir/zephyr-model-based-testing",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "tlaplus.vscode-ide"
+      ]
+    }
+  },
+  "postCreateCommand": "bash /workdir/zephyr-model-based-testing/.devcontainer/setup.sh",
+  "postStartCommand": "bash /workdir/zephyr-model-based-testing/.devcontainer/post_start.sh"
+}

@@ -1,0 +1,7 @@
+specs/**/*_TTrace_*.bin
+specs/**/*_TTrace_*.tla
+specs/**/*.old
+**/states
+.idea
+.vscode
+specs/**/*.out

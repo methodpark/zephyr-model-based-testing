@@ -5,3 +5,4 @@ specs/**/*.old
 .idea
 .vscode
 specs/**/*.out
+**/__pycache__

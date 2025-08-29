@@ -15,6 +15,5 @@
       ]
     }
   },
-  "postCreateCommand": "bash /workdir/zephyr-model-based-testing/.devcontainer/setup.sh",
-  "postStartCommand": "bash /workdir/zephyr-model-based-testing/.devcontainer/post_start.sh"
+  "postCreateCommand": "bash /workdir/zephyr-model-based-testing/.devcontainer/setup.sh"
 }

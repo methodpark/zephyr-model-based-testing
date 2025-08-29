@@ -13,7 +13,14 @@ RUN mkdir -p /workdir/zephyr-model-based-testing
 RUN chown user:user /workdir
 RUN chsh -s /bin/bash user
 
-USER user
+# Install most recent version of the TLA+ tools and Community Modules
+ARG TLA_TOOLS_JAR_URL=https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar
+ARG TLA_COMMUNITY_MODULES_JAR_URL=https://github.com/tlaplus/CommunityModules/releases/latest/download/CommunityModules-deps.jar
+RUN wget -O /usr/share/java/tla2tools.jar ${TLA_TOOLS_JAR_URL} && \
+    wget -O /usr/share/java/CommunityModules-deps.jar ${TLA_COMMUNITY_MODULES_JAR_URL}
 
-ENV TLA_TOOLS_JAR=/home/user/tla2tools.jar
+# Add TLA+ tools, community modules and our TLA+ library to the Java classpath
+ENV CLASSPATH=/usr/share/java/tla2tools.jar:/usr/share/java/CommunityModules-deps.jar:/workdir/zephyr-model-based-testing/specs/lib
+
+USER user
 COPY .bash_aliases /home/user/.bash_aliases

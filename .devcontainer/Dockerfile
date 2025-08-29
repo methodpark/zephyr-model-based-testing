@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -y vim bash-completion && \
     apt-get install -y openjdk-17-jre  # required for TLA+
 
-RUN pip install pre-commit
+RUN pip install --no-cache-dir pre-commit uv
 
 RUN mkdir -p /workdir/zephyr-model-based-testing
 RUN chown user:user /workdir

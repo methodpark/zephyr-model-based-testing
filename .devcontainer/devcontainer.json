@@ -11,7 +11,10 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "tlaplus.vscode-ide"
+        "tlaplus.vscode-ide",
+        "ms-python.python",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff"
       ]
     }
   },

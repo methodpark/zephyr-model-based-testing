@@ -1,7 +1,11 @@
 specs/**/*_TTrace_*.bin
 specs/**/*_TTrace_*.tla
 specs/**/*.old
+specs/**/*.out
 **/states
 .idea
-.vscode
-specs/**/*.out
+**/__pycache__
+**.mypy_cache
+**.pytest_cache
+**.ruff_cache
+**.venv

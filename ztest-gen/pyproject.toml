@@ -1,0 +1,35 @@
+[project]
+name = "ztest-gen"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Philipp Panzer", email = "philipp.panzer@ul.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+ztest-gen = "ztest_gen:main"
+
+[build-system]
+requires = ["uv_build>=0.8.14,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "ruff>=0.12.11",
+]
+tests = [
+    "pytest>=8.4.1",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+[[tool.mypy.overrides]]
+module = ["ztest_gen.*"]
+follow_untyped_imports = true

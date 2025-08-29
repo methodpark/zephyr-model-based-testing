@@ -6,8 +6,8 @@ Currently, this includes the semaphore API and the mutex API.
 ## Model-Based Testing
 
 The specifications were created in order to perform Model-Based Testing (MBT) of the APIs.
-For MBT, the model-checker TLC2 is used to generate traces from the models.
-These traces are then translated to runnable ZTEST test cases.
+For MBT, the model-checker [TLC](https://github.com/tlaplus/tlaplus) is used to generate traces from the models.
+These traces are then translated to runnable [ZTEST](https://docs.zephyrproject.org/apidoc/latest/group__ztest.html) test cases.
 
 The translation happens in part by using the `ALIAS` feature of TLC,
 which can be used to reformat counterexample states.
@@ -19,11 +19,36 @@ A python tool, which generates the final, runnable ZTEST file from the traces wi
 ## System Requirements
 
 In order to work with the specifications, you need to have the [TLA+ Toolbox](https://github.com/tlaplus/tlaplus) installed, which requires  Java 11+.
-You can either install these requirements on your system or (recommended) open this project in VSCode and use the provided devcontainer config.
+Also, the specifications use the [TLA+ Community Modules](https://github.com/tlaplus/CommunityModules).
+You can either install these requirements on your system or open this project in VSCode and use the provided devcontainer config (recommended).
 
-If you choose to install the toolbox yourself, you should have a Java archive `tla2tools.jar` somewhere on your file system.
-The remainder of this README assumes that the environment variable `$TLA_TOOLS_JAR` contains the path to that archive.
-The devcontainer sets this variable automatically.
+### Manual Installation
+
+To install the TLA+ tools, download the [`tla2tools.jar`](https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar),
+for example to `/usr/share/java`.
+For the Community Modules, download the [`CommunityModules-deps.jar`](https://github.com/tlaplus/CommunityModules/releases/latest/download/CommunityModules-deps.jar).
+
+To make these archives available to `java`, add them to the `CLASSPATH`:
+
+```bash
+export CLASSPATH="/usr/share/java/tla2tools.jar:/usr/share/java/CommunityModules-deps.jar"
+```
+
+Also, add the path `specs/lib` to the classpath.
+That will give the model-checker access to common libraries.
+
+```bash
+export CLASSPATH="/path/to/repo/specs/lib:${CLASSPATH}"
+```
+
+Now, you can run the PlusCal translator and TLC:
+
+```bash
+java pcal.trans specs/semaphores/Semaphores.tla
+java tlc2.TLC specs/semaphores/Semaphores.tla
+```
+
+It is helpful, to set aliases in your shell, see [.bash_aliases](.devcontainer/.bash_aliases).
 
 ### pre-commit
 
@@ -32,13 +57,13 @@ The devcontainer already includes `pre-commit`.
 If you are not using the devcontainer, please install `pre-commit` on your system and
 set it up for this repository by running `pre-commit install`.
 
+### Devcontainer
+
+The Devcontainer takes care of installing the TLA+ tools, Community Modules and aliases.
+So if you open this repository in VSCode and open a terminal, you will have the commands `tlc` and `pcal-trans`
+availabe.
+
 ## Working with the Specifications
-
-In order to check a specification (e.g. `Semaphores.tla`), navigate to the containing directory.
-
-```bash
-cd specs/semaphores
-```
 
 ### Translate the PlusCal spec to TLA+
 
@@ -46,20 +71,17 @@ Since the specifications are written in PlusCal, you need to translate them to T
 translator included in the TLA+ tools:
 
 ```
-java -cp $TLA_TOOLS_JAR pcal.trans Semaphores.tla
+pcal-trans specs/semaphores/Semaphores.tla
 ```
 
 This will generate the necessary TLA+ specification and write it into the same file.
 
-### Run TLC2 on the TLA+ Spec
+### Run TLC on the TLA+ Spec
 
 Next, run the model checker on the specification.
-Since the mutex and semaphore specifications use common TLA+ modules stored in `specs/lib`,
-we need to set the system property `DTLA-Library` to `../lib` in the java runtime.
-Note that this only works if running directly from the directory that contains the specification `Semaphores.tla`.
 
 ```
-java -DTLA-Library=../lib -jar $TLA_TOOLS_JAR Semaphores.tla
+tlc specs/semaphores/Semaphores.tla
 ```
 
 The model checker will then check the model and search for errors, deadlocks, and property violations.
@@ -69,7 +91,7 @@ For the above invocation, no errors should be reported.
 
 When running the model checker, it requires a `*.cfg` file,
 which assigns values to model parameters and tells the model checker which properties to check.
-If no config file is passed explicitly, TLC2 will use the configuration with the same basename as the spec
+If no config file is passed explicitly, TLC will use the configuration with the same basename as the spec
 (e.g. `Semaphores.cfg` for `Semaphores.tla`).
 
 In order to generate a trace from a model, we need to configure the model checker to
@@ -81,7 +103,7 @@ If you check the model again with the `SemaphoresMBT.cfg` configuration, the mod
 a trace, as it finds a property violation:
 
 ```
-java -DTLA-Library=../lib -jar $TLA_TOOLS_JAR -config SemaphoresMBT.cfg Semaphores.tla
+tlc -config specs/semaphores/SemaphoresMBT.cfg specs/semaphores/Semaphores.tla
 ```
 
 ### Specification Structure
